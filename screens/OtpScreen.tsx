@@ -10,11 +10,12 @@ import {
   Alert,
 } from 'react-native';
 
-const OtpScreen = ({ navigation }: any) => {
+const OtpScreen = ({ navigation, route }: any) => {
   const [otp, setOtp] = useState(['', '', '', '']);
   const inputRefs = useRef<Array<TextInput | null>>([]);
 
-  
+  const { phone, code } = route.params || {};
+
   const handleChange = (value: string, index: number) => {
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -25,7 +26,6 @@ const OtpScreen = ({ navigation }: any) => {
     }
   };
 
- 
   const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === 'Backspace' && otp[index] === '' && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -35,18 +35,17 @@ const OtpScreen = ({ navigation }: any) => {
     }
   };
 
-
   const handleVerify = () => {
     const enteredOtp = otp.join('');
     if (enteredOtp.length < 4) {
       Alert.alert('Invalid OTP', 'Please enter a valid 4-digit OTP.');
       return;
     }
-    Alert.alert('OTP Verified', `Entered OTP: ${enteredOtp}`);
-    navigation.replace('Home');
+
+    Alert.alert('OTP Verified', `+${code} ${phone} → OTP: ${enteredOtp}`);
+    navigation.replace('Home'); 
   };
 
-  
   const handleResend = () => {
     Alert.alert('OTP Sent', 'A new OTP has been sent to your phone.');
   };
@@ -57,7 +56,9 @@ const OtpScreen = ({ navigation }: any) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.content}>
         <Text style={styles.title}>OTP Verification</Text>
-        <Text style={styles.subtitle}>Enter the 4-digit code sent to your phone</Text>
+        <Text style={styles.subtitle}>
+          Enter the 4-digit code sent to +{code} {phone}
+        </Text>
 
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (
@@ -66,7 +67,9 @@ const OtpScreen = ({ navigation }: any) => {
               ref={(ref) => (inputRefs.current[index] = ref)}
               style={styles.otpInput}
               value={digit}
-              onChangeText={(value) => handleChange(value.replace(/[^0-9]/g, ''), index)}
+              onChangeText={(value) =>
+                handleChange(value.replace(/[^0-9]/g, ''), index)
+              }
               onKeyPress={(e) => handleKeyPress(e, index)}
               keyboardType="numeric"
               maxLength={1}
@@ -82,7 +85,8 @@ const OtpScreen = ({ navigation }: any) => {
 
         <TouchableOpacity onPress={handleResend}>
           <Text style={styles.resendText}>
-            Didn’t receive code? <Text style={styles.resendLink}>Resend OTP</Text>
+            Didn’t receive code?{' '}
+            <Text style={styles.resendLink}>Resend OTP</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -92,6 +96,7 @@ const OtpScreen = ({ navigation }: any) => {
 
 export default OtpScreen;
 
+// ✅ Keep your same styles below
 const styles = StyleSheet.create({
   container: {
     flex: 1,

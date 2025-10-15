@@ -41,7 +41,7 @@ const IntroScreen = ({ navigation }: any) => {
   };
 
   const onDone = () => {
-    navigation.replace('OTP');
+    navigation.replace('Phone');
   };
 
   const renderDoneButton = () => (
