@@ -29,6 +29,7 @@ const slides = [
   },
 ];
 
+
 const IntroScreen = ({ navigation }: any) => {
   const _renderItem = ({ item }: any) => {
     return (
